@@ -1,6 +1,16 @@
 services:
   simple-mcp:
+    image: victorvasc/simple-mcp-http:latest
+    environment:
+      HEADERS: ${HEADERS}
+      TOOLS: ${TOOLS}
+    stdin_open: true
+    tty: true
+
+  simple-mcp-build:
+    profiles: ["build-local"]
     build: .
+    image: victorvasc/simple-mcp-http:latest
     environment:
       HEADERS: ${HEADERS}
       TOOLS: ${TOOLS}

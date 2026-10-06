@@ -24,10 +24,55 @@ npm test
 
 ## Docker
 
+A imagem publicada no Docker Hub é [`victorvasc/simple-mcp-http`](https://hub.docker.com/r/victorvasc/simple-mcp-http),
+atualizada automaticamente a cada push na `main` (veja `.github/workflows/docker-publish.yml`).
+
+### Rodando a imagem publicada
+
 ```
-docker compose build
+docker compose pull
 docker compose run --rm simple-mcp
 ```
+
+Ou sem docker-compose:
+
+```
+docker run -i --rm \
+  -e HEADERS='{"Authorization":"Bearer XXXXX"}' \
+  -e TOOLS='{"FindInvoices":{"method":"GET","url":"https://api.example.com/invoices"}}' \
+  victorvasc/simple-mcp-http:latest
+```
+
+`-i` é obrigatório: o servidor fala MCP via stdio.
+
+### Build local (desenvolvimento)
+
+```
+docker compose --profile build-local build simple-mcp-build
+docker compose --profile build-local run --rm simple-mcp-build
+```
+
+### Usando num cliente MCP (Claude Desktop, Claude Code, etc.)
+
+No arquivo de configuração do cliente (ex.: `claude_desktop_config.json` ou `.mcp.json`):
+
+```json
+{
+  "mcpServers": {
+    "simple-mcp-http": {
+      "command": "docker",
+      "args": [
+        "run", "-i", "--rm",
+        "-e", "HEADERS={\"Authorization\":\"Bearer XXXXX\"}",
+        "-e", "TOOLS={\"FindInvoices\":{\"method\":\"GET\",\"url\":\"https://api.example.com/invoices\"}}",
+        "victorvasc/simple-mcp-http:latest"
+      ]
+    }
+  }
+}
+```
+
+O cliente sobe o container sob demanda e conversa com ele via stdio.
 
 ## Configuração
 
