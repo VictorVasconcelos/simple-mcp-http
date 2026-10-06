@@ -1,0 +1,8 @@
+services:
+  simple-mcp:
+    build: .
+    environment:
+      HEADERS: ${HEADERS}
+      TOOLS: ${TOOLS}
+    stdin_open: true
+    tty: true
